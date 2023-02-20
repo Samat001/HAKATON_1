@@ -13,6 +13,7 @@ class RegisterAPIVew(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        print('okay!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
         return Response('Вы успешно зарегистрировались , Вам отправлено письмо с активацией ', status=201) 
 
@@ -24,6 +25,7 @@ class ActivationView(APIView):
             user.is_active = True
             user.activation_code = ''
             user.save()
+            print('lyalya-topolya!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             return Response({'msg': 'Успешно'}, status=200)
         except User.DoesNotExist:
             return Response({'msg': 'Link expired'}, status=400)
