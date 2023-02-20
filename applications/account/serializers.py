@@ -12,7 +12,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
     def validate_email(self, email):
-        print('hello')
         return email
 
     def validate(self, attrs):
