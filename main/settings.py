@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*juaz*5d#_r!@ef2r7i@l9n00a65o^9ek@namlc(xi0cjsxwxv'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -137,6 +137,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS' : {
+        'api_key':{
+            'type': 'apiKey',
+            'in': 'header',
+            'name':'Authorization'
+        }
+    }
+}
 
 REST_FRAMEWORK = {
     
