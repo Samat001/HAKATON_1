@@ -78,3 +78,69 @@ dmypy.json
 cython_debug/
 poetry.toml
 .ruff_cache/
+
+
+
+
+
+моделька
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    # другие поля продукта
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, through='OrderItem')
+    created_at = models.DateTimeField(auto_now_add=True)
+    # другие поля заказа
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    # другие поля элемента заказа
+
+
+
+
+сериализаторы 
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    class Meta:
+        model = OrderItem
+        fields = ('product', 'quantity')
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True)
+    class Meta:
+        model = Order
+        fields = ('id', 'user', 'created_at', 'order_items')
+
+
+
+Вюшки 
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filterset_fields = ['name', 'price'] # фильтрация продуктов по имени и цене
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filterset_fields = ['user__username'] # фильтрация заказов по имени пользователя
+
+    def perform_create(self, serializer):
+        order = serializer.save(user=self.request.user)
+        for item in serializer.validated_data['order_items']:
+            product = item['product']
+            quantity = item['quantity']
+            OrderItem.objects.create(order=order, product=product, quantity=quantity)
+
+
+В данном примере создается заказ со списком продуктов и их количеством. При создании заказа, выполняется проверка продуктов и их количества, а затем создаются связанные элементы заказа. Фильтрация осуществляется через DjangoFilterBackend, который позволяет фильтровать результаты запроса по заданным полям моделей.
