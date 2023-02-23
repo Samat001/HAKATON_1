@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from applications.account.serializers import RegisterSerializer, LoginSerializer
 from rest_framework.response import Response
@@ -9,9 +8,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework import generics
 from django.contrib.auth.models import User
-from .serializers import ChangePasswordSerializer
-
-
+from .serializers import *
+from datetime import datetime
+from django.shortcuts import get_object_or_404
+from .serializers import ConfirmPasswordSerializer
 
 
 User = get_user_model()
@@ -20,7 +20,7 @@ class RegisterAPIVew(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        print('okay!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        
 
         return Response('Вы успешно зарегистрировались , Вам отправлено письмо с активацией ', status=201) 
 
@@ -51,7 +51,7 @@ class LogoutAPIView(APIView):
             return Response(status=403)
 
 
- 
+
 
 class ChangePasswordView(generics.UpdateAPIView):
 
@@ -84,3 +84,42 @@ class ChangePasswordView(generics.UpdateAPIView):
             return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+
+class ResetPasswordView(APIView):
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = User.objects.get(email=email)
+            user.create_activation_code()
+            user.save()
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',user.activation_code)
+            send_resset_code(user.email, user.activation_code)
+            
+            
+            return Response({'message': 'Запрос на смену пароля успешно отправлен'})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ConfirmPasswordView(APIView):
+    def post(self, request):
+        serializer = ConfirmPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            new_password = serializer.validated_data['new_password']
+            user.set_password(new_password)
+            if hasattr(user, 'activation_code'):
+                user.activation_code = ''
+            user.save()
+            return Response({'message': 'Пароль успешно изменен'})
+        return Response(serializer.errors, status=400)
+
+
+    
+    
