@@ -37,5 +37,8 @@ urlpatterns = [
     path('api/v1/account/',include('applications.account.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  
+    path('api/v1/product/',include('applications.product.urls')),
+    path('api/v1/order/',include('applications.order.urls')),
+    path('api/v1/feedback/', include('applications.feedback.urls')),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
