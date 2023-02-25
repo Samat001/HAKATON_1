@@ -17,7 +17,7 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+# CART_SESSION_ID = 'applications.cart'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -43,12 +43,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
-    'django_rest_passwordreset',
+    # 'django_filters',
+    
 
     #my apps 
-    'applications.bexicano',
+    'applications.order',
     'applications.account',
-    'applications.comment',
+    'applications.feedback',
+    'applications.product',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +93,7 @@ DATABASES = {
         'NAME':config('DB_NAME'),
         'USER':config('DB_USER'),
         'PASSWORD':config('DB_PASSWORD'),
-        'HOST':config('DB_HOST'),
+        'HOST':config('ALLOWED_HOSTS'),
         'PORT':'5432',
 
     }
@@ -151,10 +153,11 @@ SWAGGER_SETTINGS = {
 }
 
 REST_FRAMEWORK = {
-    
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_AUTHENTICATION_CLASSES': (
     
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
     )
     
 }
@@ -170,3 +173,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
