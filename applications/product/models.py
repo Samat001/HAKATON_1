@@ -4,42 +4,6 @@ from django.shortcuts import get_object_or_404 ,render
 
 User = get_user_model()
 
-# class Post(models.Model):
-#     title = models.CharField('Название поста' , max_length=50, null=True , blank=True)
-#     description = models.TextField('Описание поста')
-#     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts',verbose_name='Владелец поста')
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     # image = models.ImageField(upload_to='images', null=True , blank=True)
-#     john = models.CharField(max_length=50, null=True, blank=True)
-#     def __str__(self) -> str:
-#         return f'{self.title}'
-
-#     def save(self):
-        
-
-#         return super().save()
-
-
-
-# class PostImage(models.Model):
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
-#     image = models.ImageField(upload_to='post_images')
-
-
-#     def __str__(self) -> str:
-#         return f'{self.post.title}'
-
-# class Comment(models.Model):
-#     owner = models.ForeignKey(User,on_delete=models.CASCADE, related_name='comments')
-#     post = models.ForeignKey(Post,on_delete=models.CASCADE, related_name='comments')
-#     body =models.TextField()
-#     created_at =  models.DateTimeField(auto_now_add=True)
-#     updated_at =  models.DateTimeField(auto_now=True)
-
-#     def __str__(self) -> str:
-#         return f'{self.owner} -> {self.post.title}'
-
-
 class Category(models.Model):
     name = models.CharField(max_length=100,db_index=True)
     slug = models.CharField(max_length=100,unique=True)
@@ -63,8 +27,8 @@ class Brand(models.Model):
         return self.name
 
 class Product(models.Model):
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE,verbose_name='Категория')
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True,verbose_name='Брэнд')
     name = models.CharField(max_length=150, db_index=True, verbose_name='Наименование')
     slug = models.CharField(max_length=150, db_index=True, unique=True, verbose_name='Ссылка')
     image = models.ImageField(upload_to='product/%Y/%m/%d',blank=True)
@@ -84,3 +48,16 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.name
 
+
+
+
+
+class Comment(models.Model):
+    owner = models.ForeignKey(User,on_delete=models.CASCADE, related_name='comments')
+    product = models.ForeignKey(Product,on_delete=models.CASCADE, related_name='comments')
+    body = models.TextField()
+    created_at =  models.DateTimeField(auto_now_add=True)
+    updated_at =  models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.owner} -> {self.product.name}'

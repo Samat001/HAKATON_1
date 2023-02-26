@@ -9,9 +9,9 @@ router = DefaultRouter()
 router.register('orders', OrderViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)), # http://localhost:8000/api/v1/orders/8/ крад на заказы 
-    path('order_history/', OrderHistoryView.as_view(), name='order_history'),
+    path('', include(router.urls)), # http://localhost:8000/api/v1/order/orders/11/ крад на заказы 
+    path('order_history/', OrderHistoryView.as_view(), name='order_history'),  
     
 ]
 
-# http://localhost:8000/api/v1/order_history/ каждый пользователь может увидеть свою историю заказов для этого он должен быть авторизованным
+# http://localhost:8000/api/v1/order/order_history/ каждый пользователь может увидеть свою историю заказов для этого он должен быть авторизованным
