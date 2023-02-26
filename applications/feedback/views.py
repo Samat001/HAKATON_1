@@ -5,6 +5,9 @@ from ..feedback.models import Favorite
 from ..feedback.serializers import *
 from rest_framework.permissions import IsAuthenticated
 
+
+
+
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer

@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Category , Product, Brand
+from .models import Category , Product, Brand , Comment
 from django.utils.safestring import mark_safe
 
 admin.site.register(Brand)
+admin.site.register(Comment)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
