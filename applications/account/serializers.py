@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model , authenticate
 from applications.account.send_email import *
-from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+
 
 User = get_user_model()
 
